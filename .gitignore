@@ -19,3 +19,4 @@ composer.phar
 vendor/
 /custom/Espo/Custom/*
 /install/config.php
+client/css/espo/
