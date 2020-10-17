@@ -1,0 +1,48 @@
+{
+    "actualFields": [
+            "id",
+            "url",
+            "json"
+        ],
+    "fields": {
+        "url": {
+            "type": "image",
+        },
+        "json": {
+            "type": "jsonObject",
+            "disabled": true,
+            "readOnly": true
+        }
+    },
+   "params":[
+      {
+         "name":"required",
+         "type":"bool",
+         "default":false
+      },
+      {
+         "name":"previewSize",
+         "type":"enum",
+         "default":"small",
+         "options": ["x-small", "small", "medium", "large"]
+      },
+      {
+         "name":"audited",
+         "type":"bool"
+      }
+   ],
+   "notActualFields":[
+      "name"
+   ],
+   "validationList": [
+      "required"
+   ],
+   "filter": true,
+   "linkDefs": {
+      "type": "belongsTo",
+      "entity": "Attachment",
+      "skipOrmDefs": true,
+      "disabled": true
+   },
+   "personalData": true
+}
