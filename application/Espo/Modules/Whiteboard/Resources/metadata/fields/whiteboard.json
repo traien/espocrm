@@ -1,19 +1,21 @@
 {
     "actualFields": [
-            "id",
-            "url",
-            "json"
+            "board",
+            "img"
         ],
-    "fields": {
-        "url": {
-            "type": "image",
+        "fields": {
+            "board": {
+                "type": "wysiwyg",
+                "view": "whiteboard:views/fields/whiteboard",
+                "useIframe": true
+            },
+            "img": {
+                "type": "image",
+                "readOnly": true,
+                "view": "views/fields/image",
+                "notStorable": true
+            }
         },
-        "json": {
-            "type": "jsonObject",
-            "disabled": true,
-            "readOnly": true
-        }
-    },
    "params":[
       {
          "name":"required",
@@ -21,28 +23,29 @@
          "default":false
       },
       {
-         "name":"previewSize",
-         "type":"enum",
-         "default":"small",
-         "options": ["x-small", "small", "medium", "large"]
+         "name":"default",
+         "type":"varchar"
+      },
+      {
+         "name":"maxLength",
+         "type":"int"
+      },
+      {
+         "name": "strip",
+         "type": "bool"
       },
       {
          "name":"audited",
          "type":"bool"
+      },
+      {
+         "name":"readOnly",
+         "type":"bool"
       }
    ],
-   "notActualFields":[
-      "name"
-   ],
-   "validationList": [
-      "required"
-   ],
    "filter": true,
-   "linkDefs": {
-      "type": "belongsTo",
-      "entity": "Attachment",
-      "skipOrmDefs": true,
-      "disabled": true
+   "fieldDefs":{
+      "type":"varchar"
    },
    "personalData": true
 }
