@@ -1,74 +1,116 @@
-/************************************************************************
- * This file is part of EspoCRM.
- *
- * EspoCRM - Open Source CRM application.
- * Copyright (C) 2014-2020 Yuri Kuznetsov, Taras Machyshyn, Oleksiy Avramenko
- * Website: https://www.espocrm.com
- *
- * EspoCRM is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * EspoCRM is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with EspoCRM. If not, see http://www.gnu.org/licenses/.
- *
- * The interactive user interfaces in modified source and object code versions
- * of this program must display Appropriate Legal Notices, as required under
- * Section 5 of the GNU General Public License version 3.
- *
- * In accordance with Section 7(b) of the GNU General Public License version 3,
- * these Appropriate Legal Notices must retain the display of the "EspoCRM" word.
- ************************************************************************/
-
-Espo.define('whiteboard:views/fields/whiteboard', 'views/fields/wysiwyg', function (Dep) {
+Espo.define('whiteboard:views/fields/whiteboard', 'views/fields/image', function (Dep) {
 
     return Dep.extend({
 
-        listTemplate: 'whiteboard:fields/whiteboard/detail',
+        // type: 'image',
+        //
+        // showPreview: true,
+        //
+        // accept: ['image/*'],
+        //
+        // defaultType: 'image/jpeg',
 
         detailTemplate: 'whiteboard:fields/whiteboard/detail',
 
-        editTemplate: 'whiteboard:fields/whiteboard/edit',
+        // previewSize: 'small',
 
-        height: 450,
-
-        rowsDefault: 15,
-
-        guid : generateGuid(),
-
-        seeMoreDisabled: true,
-
-        afterRender: function () {
+        setup: function () {
             Dep.prototype.setup.call(this);
+            console.log('setup');
+
+            this.setReadOnly();
+
+            this.model.on('after:save', function (data) {
+                console.log('saved');
+                console.log(data);
+                this.model
+                // if (this.itemListChanged) {
+                //
+                //     // html2canvas(document.querySelector("#tooth-chart")).then(function (canvas) {
+                //     //     this.uploadFile(canvas)
+                //     // }.bind(this));
+                // }
+            }.bind(this));
+
+            // this.model.on('change:itemList', function () {
+            //     this.itemListChanged = true;
+            // }.bind(this))
         },
-        data: function () {
-            var data = Dep.prototype.data.call(this);
-            console.log(data);
-            data.guid = !!data.guid ? data.guid : this.guid;
-            data.isPlain = this.isPlain();
-            return data;
+        // setMode: function (mode) {
+        //     Dep.prototype.setMode.call(this, 'edit');
+        // },
+        events: {
+            'click img[data-action="showWbPreview"]': function (e) {
+                e.preventDefault();
+
+                var id = this.model.get(this.idName);
+                this.createView('preview', 'whiteboard:views/modals/whiteboard', {
+                    id: id,
+                    model: this.model,
+                    name: this.model.get(this.nameName)
+                }, function (view) {
+                    view.render();
+                    this.listenToOnce(view, 'after:save', function (data) {
+                        console.log('saved');
+                        console.log(data.canvas);
+                        this.uploadFile(data.canvas);
+                    }, this);
+                });
+            },
+            'click input.file': function (e) {
+                e.preventDefault();
+
+                var id = this.model.get(this.idName);
+                this.createView('preview', 'whiteboard:views/modals/whiteboard', {
+                    id: id,
+                    model: this.model,
+                    name: this.model.get(this.nameName)
+                }, function (view) {
+                    view.render();
+                    this.listenToOnce(view, 'after:save', function (data) {
+                        console.log('saved');
+                        console.log(data.canvas);
+                        this.uploadFile(data.canvas);
+                    }, this);
+                });
+            },
         },
-        fetch: function () {
-            var data = {};
-            data[this.name] = this.guid;
-            return data;
+        uploadFile: function (canvas) {
+            var isCanceled = false;
+
+            this.isUploading = true;
+            console.log('uploading');
+            this.getModelFactory().create('Attachment', function (attachment) {
+                var $attachmentBox = this.addAttachmentBox('tooth-chart.png', 'image/png');
+                var dataURL = canvas.toDataURL();
+
+                this.$el.find('.attachment-button').addClass('hidden');
+
+                attachment.set('name', 'tooth-chart.png');
+                attachment.set('type', 'image/png');
+                attachment.set('size', dataURL.length);
+                attachment.set('role', 'Attachment');
+                attachment.set('relatedType', this.model.name);
+                attachment.set('file', dataURL);
+                attachment.set('field', this.name);
+
+                attachment.save({}, {timeout: 0}).then(function () {
+                    this.isUploading = false;
+                    if (!isCanceled) {
+                        $attachmentBox.trigger('ready');
+                        this.setAttachment(attachment);
+                        this.model.save().then(function (value) {
+
+                        });
+                    }
+                }.bind(this)).fail(function () {
+                    $attachmentBox.remove();
+                    this.$el.find('.uploading-message').remove();
+                    this.$el.find('.attachment-button').removeClass('hidden');
+                    this.isUploading = false;
+                }.bind(this));
+
+            }, this);
         }
     });
-    function generateGuid() {
-        var result, i, j;
-        result = '';
-        for(j=0; j<32; j++) {
-            if( j == 8 || j == 12 || j == 16 || j == 20)
-                result = result + '-';
-            i = Math.floor(Math.random()*16).toString(16).toUpperCase();
-            result = result + i;
-        }
-        return result;
-    }
 });

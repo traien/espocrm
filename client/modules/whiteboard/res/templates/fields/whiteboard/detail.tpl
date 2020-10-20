@@ -1,2 +1,8 @@
-<iframe frameborder="0" src="http://s1.sytohost.com:32802/?whiteboardid={{guid}}"
-        style="width: 100%; height: 400px; overflow-x: hidden; overflow-y: hidden;" class=""></iframe>
+{{#if value}}
+    {{{value}}}
+{{else}}
+    {{#if valueIsSet}}
+    {{{translate 'None'}}}
+    {{else}}<img src="https://via.placeholder.com/150" data-action="showWbPreview">
+    <div class="attachment"></div>{{/if}}
+{{/if}}

@@ -1,0 +1,10 @@
+{
+    "scriptList": [
+        "__APPEND__",
+        "client/modules/whiteboard/src/libs/html2canvas.min.js"
+    ],
+    "developerModeScriptList": [
+        "__APPEND__",
+        "client/modules/whiteboard/src/libs/html2canvas.min.js"
+    ]
+}

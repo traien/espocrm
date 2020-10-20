@@ -1,51 +1,43 @@
 {
-    "actualFields": [
-            "board",
-            "img"
-        ],
-        "fields": {
-            "board": {
-                "type": "wysiwyg",
-                "view": "whiteboard:views/fields/whiteboard",
-                "useIframe": true
-            },
-            "img": {
-                "type": "image",
-                "readOnly": true,
-                "view": "views/fields/image",
-                "notStorable": true
-            }
-        },
-   "params":[
-      {
-         "name":"required",
-         "type":"bool",
-         "default":false
-      },
-      {
-         "name":"default",
-         "type":"varchar"
-      },
-      {
-         "name":"maxLength",
-         "type":"int"
-      },
-      {
-         "name": "strip",
-         "type": "bool"
-      },
-      {
-         "name":"audited",
-         "type":"bool"
-      },
-      {
-         "name":"readOnly",
-         "type":"bool"
-      }
-   ],
-   "filter": true,
-   "fieldDefs":{
-      "type":"varchar"
-   },
-   "personalData": true
+  "view": "whiteboard:views/fields/whiteboard",
+  "params":[
+    {
+      "name":"required",
+      "type":"bool",
+      "default":false
+    },
+    {
+      "name":"previewSize",
+      "type":"enum",
+      "default":"small",
+      "options": ["x-small", "small", "medium", "large"]
+    },
+    {
+      "name": "maxFileSize",
+      "type": "float",
+      "tooltip": true,
+      "min": 0
+    },
+    {
+      "name":"audited",
+      "type":"bool"
+    }
+  ],
+  "actualFields":[
+    "id"
+  ],
+  "notActualFields":[
+    "name"
+  ],
+  "validationList": [
+    "required"
+  ],
+  "filter": true,
+  "linkDefs": {
+    "type": "belongsTo",
+    "entity": "Attachment",
+    "skipOrmDefs": true,
+    "disabled": true
+  },
+  "personalData": true
 }
