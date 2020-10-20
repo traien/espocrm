@@ -1,43 +1,55 @@
 {
-  "view": "whiteboard:views/fields/whiteboard",
-  "params":[
-    {
-      "name":"required",
-      "type":"bool",
-      "default":false
+    "view": "whiteboard:views/fields/whiteboard",
+    "notActualFields": [
+        "name"
+    ],
+    "actualFields": [
+        "id",
+        "guid"
+    ],
+    "fields": {
+        "id": {
+            "type": "varchar"
+        },
+        "guid": {
+            "type": "varchar",
+            "readOnly": true
+        }
     },
-    {
-      "name":"previewSize",
-      "type":"enum",
-      "default":"small",
-      "options": ["x-small", "small", "medium", "large"]
+    "params": [
+        {
+            "name": "required",
+            "type": "bool",
+            "default": false
+        },
+        {
+            "name": "previewSize",
+            "type": "enum",
+            "default": "small",
+            "options": [
+                "x-small",
+                "small",
+                "medium",
+                "large"
+            ]
+        },
+        {
+            "name": "maxFileSize",
+            "type": "float",
+            "tooltip": true,
+            "min": 0
+        },
+        {
+            "name": "audited",
+            "type": "bool"
+        }
+    ],
+    "filter": false,
+    "linkDefs": {
+        "type": "belongsTo",
+        "entity": "Attachment",
+        "skipOrmDefs": true,
+        "disabled": true
     },
-    {
-      "name": "maxFileSize",
-      "type": "float",
-      "tooltip": true,
-      "min": 0
-    },
-    {
-      "name":"audited",
-      "type":"bool"
-    }
-  ],
-  "actualFields":[
-    "id"
-  ],
-  "notActualFields":[
-    "name"
-  ],
-  "validationList": [
-    "required"
-  ],
-  "filter": true,
-  "linkDefs": {
-    "type": "belongsTo",
-    "entity": "Attachment",
-    "skipOrmDefs": true,
-    "disabled": true
-  },
-  "personalData": true
+    "personalData": true
 }

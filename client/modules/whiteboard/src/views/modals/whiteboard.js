@@ -6,23 +6,14 @@ Espo.define('whiteboard:views/modals/whiteboard', ['views/modal'], function (Dep
 
         template: 'whiteboard:modals/whiteboard',
 
-        size: '',
-
         header: 'Whiteboard',
 
         backdrop: true,
 
-        transformClassList: [
-            'transform-flip',
-            'transform-rotate-180',
-            'transform-flip-and-rotate-180',
-            'transform-flip-and-rotate-270',
-            'transform-rotate-90',
-            'transform-flip-and-rotate-90',
-            'transform-rotate-270',
-        ],
         setup: function () {
             Dep.prototype.setup.call(this);
+
+            this.whiteboardUrl = this.getConfig().get('whiteboardUrl');
             this.buttonList = [
                 {
                     name: 'cancel',
@@ -30,34 +21,36 @@ Espo.define('whiteboard:views/modals/whiteboard', ['views/modal'], function (Dep
                 },
                 {
                     name: 'save',
+                    style: 'primary',
                     label: 'Save'
                 }
             ];
-            console.log('setup modal');
-
-            // this.once('save', function () {
-            //     console.log('saved');
-            //
-            //     // if (this.itemListChanged) {
-            //     //
-            //         html2canvas(document.querySelector("#whiteboard-frame")).then(function (canvas) {
-            //             this.uploadFile(canvas)
-            //         }.bind(this));
-            //     // }
-            // }.bind(this));
-
-            // this.model.on('change:itemList', function () {
-            //     this.itemListChanged = true;
-            // }.bind(this))
         },
+
+        data: function () {
+            var data = {};
+            data.guid = this.options.guid;
+            data.whiteboardUrl = this.whiteboardUrl;
+            return data;
+        },
+
         actionSave: function () {
-            console.log('saving');
-            html2canvas(document.querySelector("#whiteboard-frame")).then(function (canvas) {
-                // this.uploadFile(canvas);
-                this.trigger('after:save', {canvas : canvas});
-                this.close();
+            var myFrame = document.getElementById('whiteboard-frame');
+            myFrame.contentWindow.postMessage(location.origin, this.whiteboardUrl);
+
+            window.addEventListener('message', function (event) {
+                // IMPORTANT: check the origin of the data!
+                if (event.origin.startsWith(this.whiteboardUrl)) {
+                    // The data was sent from your site.
+                    // Data sent with postMessage is stored in event.data:
+                    this.trigger('after:save', {canvas: event.data});
+                    this.close();
+                } else {
+                    // The data was NOT sent from your site!
+                    // Be careful! Do not use it. This else branch is
+                    // here just for clarity, you usually shouldn't need it.
+                }
             }.bind(this));
         },
-
     });
 });
