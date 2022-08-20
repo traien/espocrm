@@ -867,6 +867,7 @@ function (
             });
 
             this.baseController.on('logout', () => this.logout());
+            this.baseController.on('returnToAccount', () => this.returnToAccount());
         },
 
         /**
@@ -914,6 +915,24 @@ function (
             xhr.abort();
 
             this.loadStylesheet();
+        },
+
+        /**
+         * @private
+         */
+         returnToAccount: function () {
+            const xhr = new XMLHttpRequest();
+
+            document.cookie = 'login-as-user-id=; SameSite=Lax; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/';
+
+            xhr.open('GET', this.basePath + this.apiUrl + '/');
+            xhr.setRequestHeader('Authorization', 'Basic ' + this.auth);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                    window.location.reload();
+                }
+            };
+            xhr.send('');
         },
 
         /**
