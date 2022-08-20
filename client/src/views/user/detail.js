@@ -37,6 +37,20 @@ define('views/user/detail', 'views/detail', function (Dep) {
                 this.rootLinkDisabled = true;
             }
 
+            if (
+                this.getUser().isAdmin() &&
+                document.cookie.indexOf('login-as-user-id') === -1 &&
+                this.model.id !== this.getUser().id &&
+                (this.model.isRegular() || this.model.isAdmin() || this.model.isPortal())
+            ) {
+                this.addMenuItem('dropdown', {
+                    name: 'loginAsUser',
+                    label: 'Login as User',
+                    style: 'default',
+                    action: "loginAsUser"
+                });
+            }
+
             if (this.model.id === this.getUser().id || this.getUser().isAdmin()) {
 
                 if (this.model.isRegular() || this.model.isAdmin() || this.model.isPortal()) {
@@ -101,6 +115,11 @@ define('views/user/detail', 'views/detail', function (Dep) {
                     hidden: !showActivities
                 });
             }
+        },
+
+        actionLoginAsUser: function () {
+            document.cookie = 'login-as-user-id=' + this.model.id + '; SameSite=Lax; path=/';
+            window.location.href = '/';
         },
 
         actionPreferences: function () {

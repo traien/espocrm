@@ -1107,11 +1107,19 @@ define('views/site/navbar', ['view'], function (Dep) {
                     link: '#About',
                     label: this.getLanguage().translate('About')
                 },
-                {
+            ]);
+
+            if (document.cookie.indexOf('login-as-user-id') > -1) {
+                list.push({
+                    action: 'returnToAccount',
+                    label: this.getLanguage().translate('Return to My Account')
+                });
+            } else {
+                list.push({
                     action: 'logout',
                     label: this.getLanguage().translate('Log Out')
-                },
-            ]);
+                });
+            }
 
             return list;
         },
@@ -1131,6 +1139,10 @@ define('views/site/navbar', ['view'], function (Dep) {
 
         actionLogout: function () {
             this.getRouter().logout();
+        },
+
+        actionReturnToAccount: function () {
+            this.getRouter().returnToAccount(this.getUser());
         },
 
         actionShowLastViewed: function () {

@@ -498,6 +498,17 @@ define('router', [], function () {
         },
 
         /**
+         * Process `returnToAccount` route.
+         * 
+         * @param {module:models/User.Class} user A user.
+         */
+        returnToAccount: function (user) {
+            this.dispatch(null, 'returnToAccount', {
+                userId: user.id,
+            });
+        },
+
+        /**
          * @private
          */
         clearCache: function () {

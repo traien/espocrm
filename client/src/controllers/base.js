@@ -103,6 +103,10 @@ define('controllers/base', ['controller'], function (Dep) {
             this.trigger('logout');
         },
 
+        returnToAccount: function () {
+            this.trigger('returnToAccount');
+        },
+
         /**
          * Clear cache.
          */
@@ -120,6 +124,10 @@ define('controllers/base', ['controller'], function (Dep) {
 
         actionLogout: function () {
             this.logout();
+        },
+
+        actionReturnToAccount: function () {
+            this.returnToAccount();
         },
 
         actionClearCache: function () {

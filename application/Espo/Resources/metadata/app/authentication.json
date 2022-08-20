@@ -3,7 +3,11 @@
         "Espo\\Core\\Authentication\\Hook\\Hooks\\FailedAttemptsLimit"
     ],
     "onFailHookClassNameList": [],
-    "onSuccessHookClassNameList": [],
-    "onSuccessByTokenHookClassNameList": [],
+    "onSuccessHookClassNameList": [
+        "Espo\\Core\\Authentication\\Hook\\Hooks\\LoginAsUser"
+    ],
+    "onSuccessByTokenHookClassNameList": [
+        "Espo\\Core\\Authentication\\Hook\\Hooks\\LoginAsUser"
+    ],
     "onSecondStepRequiredHookClassNameList": []
 }
