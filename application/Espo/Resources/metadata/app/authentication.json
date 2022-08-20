@@ -6,6 +6,8 @@
     "onSuccessHookClassNameList": [
         "Espo\\Core\\Authentication\\Hook\\Hooks\\LoginAsUser"
     ],
-    "onSuccessByTokenHookClassNameList": [],
+    "onSuccessByTokenHookClassNameList": [
+        "Espo\\Core\\Authentication\\Hook\\Hooks\\LoginAsUser"
+    ],
     "onSecondStepRequiredHookClassNameList": []
 }
