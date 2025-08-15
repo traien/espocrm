@@ -74,6 +74,10 @@ class InFolder implements ItemConverter
     {
         $this->joinEmailUser($queryBuilder);
 
+        $emailAddressIdList = $this->getEmailAddressIdList();
+
+        $this->joinHelper->joinToEmailAddresses($queryBuilder);
+
         $whereClause = [
             Email::ALIAS_INBOX . '.inTrash' => false,
             Email::ALIAS_INBOX . '.inArchive' => false,
@@ -84,11 +88,12 @@ class InFolder implements ItemConverter
                     Email::STATUS_ARCHIVED,
                     Email::STATUS_SENT,
                 ],
-                'groupFolderId' => null,
+                'OR' => [
+                    'groupFolderId' => null,
+                    'toEmailAddresses.id' => $emailAddressIdList,
+                ],
             ],
         ];
-
-        $emailAddressIdList = $this->getEmailAddressIdList();
 
         if ($emailAddressIdList !== []) {
             $whereClause['fromEmailAddressId!='] = $emailAddressIdList;

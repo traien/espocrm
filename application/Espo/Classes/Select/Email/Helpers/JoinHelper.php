@@ -46,4 +46,15 @@ class JoinHelper
             Email::ALIAS_INBOX . '.userId' => $userId,
         ]);
     }
+
+    public function joinToEmailAddresses(QueryBuilder $queryBuilder): void
+    {
+        if ($queryBuilder->hasLeftJoinAlias('toEmailAddresses')) {
+            return;
+        }
+
+        $queryBuilder->leftJoin(
+            'toEmailAddresses'
+        );
+    }
 }
