@@ -258,6 +258,10 @@ class Processor
                 continue;
             }
 
+            $service = $this->recordServiceContainer->get($relatedEntity->getEntityType());
+
+            $service->loadAdditionalFields($relatedEntity);
+
             $relatedEntity = $this->entityManager
                 ->getRelation($entity, $relation)
                 ->findOne();
