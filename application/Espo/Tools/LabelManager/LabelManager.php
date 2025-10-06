@@ -93,9 +93,9 @@ class LabelManager implements
 
         $data = $languageObj->get($scope);
 
-        /*if (empty($data)) {
+        if (empty($data)) {
             return (object) [];
-        }*/
+        }
 
         if ($this->metadata->get(['scopes', $scope, 'entity'])) {
             if (empty($data['fields'])) {
