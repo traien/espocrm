@@ -1,3 +1,4 @@
+<?php
 /************************************************************************
  * This file is part of EspoCRM.
  *
@@ -26,36 +27,41 @@
  * these Appropriate Legal Notices must retain the display of the "EspoCRM" word.
  ************************************************************************/
 
-import MultiEnumFieldView from 'views/fields/multi-enum';
-import ForeignArrayFieldView from 'views/fields/foreign-array';
-import Helper from 'helpers/misc/foreign-field';
+namespace Espo\Core\Formula\Functions\ExtGroup\SecretGroup;
 
-class ForeignMultiEnumFieldView extends MultiEnumFieldView {
+use Espo\Core\Formula\EvaluatedArgumentList;
+use Espo\Core\Formula\Exceptions\BadArgumentType;
+use Espo\Core\Formula\Exceptions\Error;
+use Espo\Core\Formula\Exceptions\TooFewArguments;
+use Espo\Core\Formula\Func;
+use Espo\Tools\AppSecret\SecretProvider;
 
-    type = 'foreign'
+/**
+ * @noinspection PhpUnused
+ */
+class GetType implements Func
+{
+    public function __construct(private SecretProvider $secretProvider)
+    {}
 
-    /**
-     * @private
-     * @type {string}
-     */
-    foreignEntityType
-
-    setup() {
-        const helper = new Helper(this);
-        const foreignParams = helper.getForeignParams();
-
-        for (const param in foreignParams) {
-            this.params[param] = foreignParams[param];
+    public function process(EvaluatedArgumentList $arguments): string
+    {
+        if (count($arguments) < 1) {
+            throw TooFewArguments::create(1);
         }
 
-        this.foreignEntityType = helper.getEntityType();
+        $string = $arguments[0];
 
-        super.setup();
-    }
+        if (!is_string($string)) {
+            throw BadArgumentType::create(1, 'string');
+        }
 
-    setupOptions() {
-        ForeignArrayFieldView.prototype.setupOptions.call(this);
+        $secret = $this->secretProvider->get($string);
+
+        if ($secret === null) {
+            throw new Error("No secret '$string'.");
+        }
+
+        return $secret;
     }
 }
-
-export default ForeignMultiEnumFieldView;
